@@ -1,5 +1,7 @@
 .git/
+.vscode/
 venv/
 __pycache__/
 todo.txt
 Pipenv
+*.pyc

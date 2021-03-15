@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import render_template, url_for, flash, redirect, request, abort
 from flaskbook import app, db, bcrypt
 from flaskbook.forms import RegistrationForm, LoginForm, AddBookForm, UpdateAccountForm
@@ -74,6 +76,7 @@ def actual_my_books(username):
         return render_template('actual_my_books.html', books=books, user=user)
 
 
+
 # change user stuff
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
@@ -128,6 +131,18 @@ def update_book(book_id):
         form.author.data = book.author
         form.num_pages.data = book.num_pages
     return render_template('new_book.html', title='Update Book Info', form=form, legend='Update Book Info')
+
+
+@app.route('/book/<int:book_id>/complete_book', methods=['GET', 'POST'])
+@login_required
+def complete_book(book_id):
+    book = Book.query.filter_by(id = book_id).first()
+    book.date_finished = datetime.now()
+    book.complete = True
+    db.session.commit()
+
+    return redirect(url_for('my_books'))
+
 
 @app.route('/book/<int:book_id>/delete', methods=['POST'])
 @login_required
