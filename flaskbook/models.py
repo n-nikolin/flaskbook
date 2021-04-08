@@ -5,6 +5,7 @@ from flask_login import UserMixin
 # user login
 # read more about login_manager and its methods
 
+#TODO: make USER_STATS, BOOK_STATS and AUTHOR tables
 
 @login_manager.user_loader
 def load_user(user_model_id):
@@ -20,9 +21,7 @@ class UserModel(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
     books = db.relationship('Book', backref='user_book', lazy=True)
 
-    # ???? how do i store passwords
     def __init__(self, username, email, password):
-        # pass
         self.username = username
         self.email = email
         self.password = password
@@ -42,6 +41,7 @@ class Book(db.Model):
     num_pages = db.Column(db.Integer, nullable=False)
     date_started = db.Column(
         db.DateTime, nullable=False, default=datetime.utcnow)
+    #
     date_finished = db.Column(
         db.DateTime, nullable=False, default=datetime.utcnow)
     complete = db.Column(db.Boolean)

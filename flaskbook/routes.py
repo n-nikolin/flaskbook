@@ -71,8 +71,12 @@ def actual_my_books(username):
         abort(403)
     else:
         user = UserModel.query.filter_by(username=username).first_or_404()
-        books = Book.query.filter_by(user_book=user)
-        return render_template('actual_my_books.html', books=books, user=user)
+        # books = Book.query.filter_by(user_book=user)
+        completed = Book.query.filter_by(user_book=user, complete=True)
+        incomplete = Book.query.filter_by(user_book=user, complete=False)
+        # TODO: Query complete and incomplete
+        return render_template('actual_my_books.html', completed=completed, incomplete=incomplete, user=user)
+        # return render_template('actual_my_books.html', books=books, user=user)
 
 
 # change user stuff
@@ -112,6 +116,7 @@ def add_book():
 @app.route('/book/<int:book_id>')
 def book(book_id):
     book = Book.query.get_or_404(book_id)
+    # TODO: ADD BASIC STATS
     return render_template('book.html', title=book.title, book=book)
 
 
