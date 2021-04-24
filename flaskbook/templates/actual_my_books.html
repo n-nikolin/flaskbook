@@ -6,7 +6,7 @@
 
 {% extends "layout.html" %} {% block content %}
 <h1 class="mb-3">{{ user.username }}'s books, Total:</h1>
-<h2>Currently reading</h2>
+<h2>Currently reading: {{ num_incomplete }}</h2>
 {% for book in incomplete %}
 <div>
   <a
@@ -80,7 +80,7 @@
   </div>
 </div>
 {% endfor %}
-<h2>Finished Reading</h2>
+<h2>Finished Reading: {{ num_completed }}</h2>
 {% for book in completed %}
 <div>
   <a

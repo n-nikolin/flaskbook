@@ -51,7 +51,7 @@ def login():
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
-            #return redirect(next_page) if next_page else redirect(url_for('my_books'))
+            # return redirect(next_page) if next_page else redirect(url_for('my_books'))
             return redirect(next_page) if next_page else redirect(url_for('actual_my_books', username=current_user.username))
         else:
             flash('Login Unsuccessful. Please chek email and password.', 'danger')
@@ -71,11 +71,17 @@ def actual_my_books(username):
         abort(403)
     else:
         user = UserModel.query.filter_by(username=username).first_or_404()
-        # books = Book.query.filter_by(user_book=user)
         completed = Book.query.filter_by(user_book=user, complete=True)
+        num_completed = len(completed.all())
         incomplete = Book.query.filter_by(user_book=user, complete=False)
-        # TODO: Query complete and incomplete
-        return render_template('actual_my_books.html', completed=completed, incomplete=incomplete, user=user)
+        num_incomplete = len(incomplete.all())
+        return render_template('actual_my_books.html',
+                                completed=completed,
+                                num_completed=num_completed,
+                                incomplete=incomplete,
+                                user=user,
+                                num_incomplete=num_incomplete
+                                )
         # return render_template('actual_my_books.html', books=books, user=user)
 
 
@@ -117,7 +123,9 @@ def add_book():
 def book(book_id):
     book = Book.query.get_or_404(book_id)
     # TODO: ADD BASIC STATS
-    return render_template('book.html', title=book.title, book=book)
+    time_spent = (book.date_started - book.date_finished).days
+    avg_pages_book = round(book.num_pages/time_spent)
+    return render_template('book.html', title=book.title, book=book, time_spent=time_spent, avg_pages_book=avg_pages_book)
 
 
 @app.route('/book/<int:book_id>/update', methods=['GET', 'POST'])
